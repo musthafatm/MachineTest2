@@ -2,10 +2,14 @@ package com.whirlwind.iroid.machinetest2.dbhandler;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.whirlwind.iroid.machinetest2.model.Iroid;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.whirlwind.iroid.machinetest2.RegistrationActivity.metRegisterAge;
 import static com.whirlwind.iroid.machinetest2.RegistrationActivity.metRegisterName;
@@ -28,6 +32,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_AGE = "age";
     private static final String KEY_PHONE = "phone";
     private static final String KEY_QUALIFICATION = "qualification";
+
+    int id = 0;
+    int _id = id + 1;
 
 
     public DatabaseHandler(Context context) {
@@ -69,6 +76,56 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.insert(TABLE_IROID, null, values);
 
         db.close();
+    }
+
+/*
+
+    //Need to be edited for the third activity.
+
+    Iroid getIroid(int _id) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.query(TABLE_IROID, new String[]{KEY_NAME,
+                        KEY_AGE, KEY_PHONE}, KEY_ID + "=?",
+                new String[]{String.valueOf(_id)}, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        Iroid iroid = new Iroid(cursor.getString(1),
+                cursor.getString(3), cursor.getString(4));
+
+        return iroid;
+    }*/
+
+
+
+
+    public List<Iroid> getAllIroids() {
+        List<Iroid> iroidList = new ArrayList<Iroid>();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_IROID;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+
+        if (cursor.moveToFirst()) {
+            do {
+                Iroid iroid = new Iroid();
+                iroid.setId(Integer.parseInt(cursor.getString(0)));
+                iroid.setName(cursor.getString(1));
+                iroid.setPlace(cursor.getString(2));
+                iroid.setAge(cursor.getString(3));
+                iroid.setPhone(cursor.getString(4));
+                iroid.setQualification(cursor.getString(5));
+
+
+                iroidList.add(iroid);
+            } while (cursor.moveToNext());
+        }
+
+        return iroidList;
     }
 
 
