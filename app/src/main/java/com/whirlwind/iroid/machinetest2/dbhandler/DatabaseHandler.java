@@ -45,8 +45,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         String CREATE_IROID_TABLE = "CREATE TABLE " + TABLE_IROID + "("
-                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT," + KEY_PLACE + " TEXT," + KEY_AGE + " TEXT,"
-                + KEY_PHONE + " TEXT," + KEY_QUALIFICATION + " TEXT" + ")";
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_NAME + " TEXT," + KEY_PLACE + " TEXT," + KEY_AGE + " TEXT,"
+                + KEY_PHONE + " TEXT," + KEY_QUALIFICATION + " TEXT)";
 
         db.execSQL(CREATE_IROID_TABLE);
 
@@ -61,29 +61,30 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-    public void addIroid(Iroid iroid) {
+    public boolean addIroid(Iroid iroid) {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_ID, iroid.getId());
+
         //String.valueOf(metRegisterName.getText().toString())  was the second argument , but now no need.
         values.put(KEY_NAME, iroid.getName());
         values.put(KEY_PLACE, iroid.getPlace());
         values.put(KEY_AGE, iroid.getAge());
         values.put(KEY_PHONE, iroid.getPhone());
         values.put(KEY_QUALIFICATION, iroid.getQualification());
-
-
-        db.insert(TABLE_IROID, null, values);
-
+        long insert = db.insert(TABLE_IROID, null, values);
         db.close();
+
+        return insert > 0;
+
+
     }
 
 
     // Edited for the third activity.
 
-   public Iroid getIroid(String passingName) {
+    public Iroid getIroid(String passingName) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.query(TABLE_IROID, new String[]{KEY_NAME, KEY_PLACE,
@@ -100,9 +101,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-
     public List<Iroid> getAllIroids() {
-        List<Iroid> iroidList = new ArrayList<Iroid>();
+        List<Iroid> iroidList = new ArrayList<>();
 
         String selectQuery = "SELECT  * FROM " + TABLE_IROID;
 
@@ -129,9 +129,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-
-
-    public int updateIroid(String id, String finalName, String finalPlace, String finalAge, String finalPhone, String finalQualification) {
+    public boolean updateIroid(String id, String finalName, String finalPlace, String finalAge, String finalPhone, String finalQualification) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -145,17 +143,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // updating row
         //String.valueOf() is usedto cast the result to string in order to store it in string array.
         return db.update(TABLE_IROID, values, KEY_ID + " = ?",
-                new String[] { id });
+                new String[]{id}) > 0;
     }
 
 
-    public void deleteIroid(Iroid iroid) {
+    public boolean deleteIroid(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_IROID, KEY_ID + " = ?",
-                new String[] { String.valueOf(iroid.getId()) });
+        int delete = db.delete(TABLE_IROID, KEY_ID + " = ?",
+                new String[]{String.valueOf(id)});
         db.close();
-    }
 
+        return delete > 0;
+    }
 
 
 }

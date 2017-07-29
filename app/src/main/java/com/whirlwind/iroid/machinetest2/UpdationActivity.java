@@ -7,10 +7,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.whirlwind.iroid.machinetest2.dbhandler.DatabaseHandler;
 
-public class UpdationActivity extends AppCompatActivity implements View.OnClickListener{
+public class UpdationActivity extends AppCompatActivity implements View.OnClickListener {
 
     String i_d;
     String update1;
@@ -32,12 +33,13 @@ public class UpdationActivity extends AppCompatActivity implements View.OnClickL
     DatabaseHandler db;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_updation);
 
+
+        db = new DatabaseHandler(this);
 
         metUpdationName = (EditText) findViewById(R.id.etUpdationName);
         metUpdationPlace = (EditText) findViewById(R.id.etUpdationPlace);
@@ -45,20 +47,23 @@ public class UpdationActivity extends AppCompatActivity implements View.OnClickL
         metUpdationPhone = (EditText) findViewById(R.id.etUpdationPhone);
         metUpdationQualification = (EditText) findViewById(R.id.etUpdationQualification);
 
+        mbtnBack = (Button) findViewById(R.id.btnBack);
+        mbtnUpdate = (Button) findViewById(R.id.btnUpdate);
+
+
         Bundle extras = getIntent().getExtras();
         i_d = extras.getString("id");
-        update1= extras.getString("updatingName");
+        update1 = extras.getString("updatingName");
         update2 = extras.getString("updatingPlace");
-        update3= extras.getString("updatingAge");
-        update4= extras.getString("updatingPhone");
-        update5= extras.getString("updatingQualification");
+        update3 = extras.getString("updatingAge");
+        update4 = extras.getString("updatingPhone");
+        update5 = extras.getString("updatingQualification");
 
         metUpdationName.setText(update1, TextView.BufferType.EDITABLE);
         metUpdationPlace.setText(update2, TextView.BufferType.EDITABLE);
         metUpdationAge.setText(update3, TextView.BufferType.EDITABLE);
         metUpdationPhone.setText(update4, TextView.BufferType.EDITABLE);
         metUpdationQualification.setText(update5, TextView.BufferType.EDITABLE);
-
 
 
         metUpdationName = (EditText) findViewById(R.id.etUpdationName);
@@ -75,22 +80,26 @@ public class UpdationActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()){
+        switch (v.getId()) {
 
             case R.id.btnBack:
-                Intent intent = new Intent(this, ListviewActivity.class);
-                startActivity(intent);
                 finish();
                 break;
 
             case R.id.btnUpdate:
-               String finalName = metUpdationName.getText().toString();
+                String finalName = metUpdationName.getText().toString();
                 String finalPlace = metUpdationPlace.getText().toString();
                 String finalAge = metUpdationAge.getText().toString();
                 String finalPhone = metUpdationPhone.getText().toString();
                 String finalQualification = metUpdationQualification.getText().toString();
 
-                db.updateIroid(i_d, finalName, finalPlace, finalAge, finalPhone, finalQualification);
+                boolean b = db.updateIroid(i_d, finalName, finalPlace, finalAge, finalPhone, finalQualification);
+                if(b) {
+                    Toast.makeText(this, "Update successful", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show();
+                }
+                finish();
                 break;
         }
 

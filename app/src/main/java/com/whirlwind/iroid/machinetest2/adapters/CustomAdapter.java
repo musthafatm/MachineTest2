@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,56 +19,49 @@ import com.whirlwind.iroid.machinetest2.dbhandler.DatabaseHandler;
 import com.whirlwind.iroid.machinetest2.model.Iroid;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by Acer on 27-Jul-17.
  */
 
-public class CustomAdapter extends BaseAdapter {
+public class CustomAdapter extends ArrayAdapter<Iroid> {
 
-    String mListId;
-    String mListName;
-    String mListAge;
-    String mListPhone;
+    private List<Iroid> iroids;
     Context context;
-    private static LayoutInflater inflater=null;
 
-    DatabaseHandler db;
+    private LayoutInflater inflater = null;
+    private OnItemListener onItemListener;
 
 
-    public CustomAdapter(Context listViewActivity, String separatedId, String separatedName, String separatedAge, String separatedPhone) {
+    public CustomAdapter(Context context, List<Iroid> iroids) {
+        super(context, R.layout.list_row, iroids);
 
-        mListId = separatedId;
-        mListName=separatedName;
-        context=listViewActivity;
-        mListAge=separatedAge;
-        mListPhone = separatedPhone;
-        inflater = (LayoutInflater)context.
+        this.context = context;
+
+        this.iroids = iroids;
+        inflater = (LayoutInflater) context.
                 getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
 
-
     @Override
     public int getCount() {
-        return 0;
+        return iroids.size();
     }
 
     @Override
-    public Object getItem(int position) {
-        return position;
+    public Iroid getItem(int position) {
+        return iroids.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return position;
+        return iroids.get(position).getId();
     }
 
 
-
-
-    public class Holder{
-        String referenceId;
+    public class Holder {
         TextView tv1;
         TextView tv2;
         TextView tv3;
@@ -75,58 +69,40 @@ public class CustomAdapter extends BaseAdapter {
 
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
         final Holder holder = new Holder();
         View rowView;
-        rowView = inflater.inflate(R.layout.list_row, null);
+        rowView = inflater.inflate(R.layout.list_row, parent, false);
 
         holder.tv1 = (TextView) rowView.findViewById(R.id.tvListName);
         holder.tv2 = (TextView) rowView.findViewById(R.id.tvListAge);
         holder.tv3 = (TextView) rowView.findViewById(R.id.tvListPhone);
 
-        holder.referenceId = (mListId);
-        holder.tv1.setText(mListName);
-        holder.tv2.setText(mListAge);
-        holder.tv3.setText(mListPhone);
+        holder.tv1.setText(iroids.get(position).getName());
+        holder.tv2.setText(iroids.get(position).getAge());
+        holder.tv3.setText(iroids.get(position).getPhone());
         rowView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(context, "You Clicked" + holder.tv1 , Toast.LENGTH_SHORT).show();
-
-          /*
-           Sample code:
-
-           Intent myIntent = new Intent(view.getContext(), NewYork.class);
-                startActivityForResult(myIntent, 0);*/
-
-          /*................*/
-
-                Iroid clickedContact;
-
-                clickedContact = db.getIroid(String.valueOf(holder.tv1));
-
-                String idRef = String.valueOf(clickedContact.getId());
-                String nameForUpdate = clickedContact.getName();
-                String placeForUpdate = clickedContact.getPlace();
-                String ageForUpdate = clickedContact.getAge();
-                String phoneForUpdate = clickedContact.getPhone();
-                String qualificationForUpdate = clickedContact.getQualification();
-
-
-                Intent intent = new Intent(context, UpdationActivity.class);
-                intent.putExtra("id", idRef);
-                intent.putExtra("updatingName", nameForUpdate);
-                intent.putExtra("updatingPlace", placeForUpdate);
-                intent.putExtra("updatingAge", ageForUpdate);
-                intent.putExtra("updatingPhone", phoneForUpdate);
-                intent.putExtra("updatingQualification", qualificationForUpdate);
-                context.startActivity(intent);
+                if(onItemListener !=null){
+                    onItemListener.itemClick(getItem(position));
+                }
 
             }
         });
 
+
+        rowView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(onItemListener !=null) {
+                    onItemListener.itemLongClick(getItem(position));
+                }
+                return false;
+            }
+        });
 
   /* mlv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -145,4 +121,11 @@ public class CustomAdapter extends BaseAdapter {
         return rowView;
     }
 
+public void setOnItemListener(OnItemListener onItemListener) {
+    this.onItemListener = onItemListener;
+}
+    public  interface OnItemListener {
+        void itemClick(Iroid iroid);
+        void itemLongClick(Iroid iroid);
+    }
 }

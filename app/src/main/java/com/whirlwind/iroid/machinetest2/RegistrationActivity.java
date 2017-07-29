@@ -60,18 +60,21 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
             Toast.makeText(this, "All fields are mandatory to fill", Toast.LENGTH_LONG).show();
 
         } else {
-            Toast.makeText(this, "Successfully Registered", Toast.LENGTH_SHORT).show();
 /*
             id = id + 1;
 */
-            String stringName = String.valueOf(metRegisterName);
-            String stringPlace = String.valueOf(metRegisterPlace);
-            String stringAge = String.valueOf(metRegisterAge);
-            String stringPhone = String.valueOf(metRegisterPhone);
-            String stringQualification= String.valueOf(metRegisterQualification);
+            String stringName = metRegisterName.getText().toString();
+            String stringPlace = metRegisterPlace.getText().toString();
+            String stringAge = metRegisterAge.getText().toString();
+            String stringPhone = metRegisterPhone.getText().toString();
+            String stringQualification= metRegisterQualification.getText().toString();
 
 
-            db.addIroid(new Iroid(id, stringName, stringPlace, stringAge, stringPhone, stringQualification));
+            boolean isAdded = db.addIroid(new Iroid(id, stringName, stringPlace, stringAge, stringPhone, stringQualification));
+
+            if(isAdded){
+                Toast.makeText(this, "Successfully saved", Toast.LENGTH_SHORT).show();
+            }
 
             Intent intent = new Intent(this, ListviewActivity.class);
             startActivity(intent);
