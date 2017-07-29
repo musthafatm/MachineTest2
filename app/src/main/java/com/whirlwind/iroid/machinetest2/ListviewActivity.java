@@ -20,6 +20,8 @@ public class ListviewActivity extends AppCompatActivity {
     String separatedName;
     String separatedAge;
     String separatedPhone;
+    String separatedId;
+
 
     ListView mlv;
     Context context;
@@ -37,10 +39,11 @@ public class ListviewActivity extends AppCompatActivity {
 
         for (Iroid ir : iroidsListing){
 
+            separatedId = String.valueOf(ir.getId());
             separatedName = ir.getName();
             separatedAge = ir.getAge();
             separatedPhone = ir.getPhone();
-            mlv.setAdapter(new CustomAdapter(context, separatedName, separatedAge, separatedPhone));
+            mlv.setAdapter(new CustomAdapter(context, separatedId, separatedName, separatedAge, separatedPhone));
         }
 
     }

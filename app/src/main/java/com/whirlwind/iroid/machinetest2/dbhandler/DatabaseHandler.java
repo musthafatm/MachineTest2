@@ -66,11 +66,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_NAME, String.valueOf(metRegisterName.getText().toString()));
-        values.put(KEY_PLACE, String.valueOf(metRegisterPlace.getText().toString()));
-        values.put(KEY_AGE, String.valueOf(metRegisterAge.getText().toString()));
-        values.put(KEY_PHONE, String.valueOf(metRegisterPhone.getText().toString()));
-        values.put(KEY_QUALIFICATION, String.valueOf(metRegisterQualification.getText().toString()));
+        values.put(KEY_ID, iroid.getId());
+        //String.valueOf(metRegisterName.getText().toString())  was the second argument , but now no need.
+        values.put(KEY_NAME, iroid.getName());
+        values.put(KEY_PLACE, iroid.getPlace());
+        values.put(KEY_AGE, iroid.getAge());
+        values.put(KEY_PHONE, iroid.getPhone());
+        values.put(KEY_QUALIFICATION, iroid.getQualification());
 
 
         db.insert(TABLE_IROID, null, values);
@@ -78,26 +80,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-/*
 
-    //Need to be edited for the third activity.
+    // Edited for the third activity.
 
-    Iroid getIroid(int _id) {
+   public Iroid getIroid(String passingName) {
 
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.query(TABLE_IROID, new String[]{KEY_NAME,
-                        KEY_AGE, KEY_PHONE}, KEY_ID + "=?",
-                new String[]{String.valueOf(_id)}, null, null, null, null);
+        Cursor cursor = db.query(TABLE_IROID, new String[]{KEY_NAME, KEY_PLACE,
+                        KEY_AGE, KEY_PHONE, KEY_QUALIFICATION}, KEY_NAME + "=?",
+                new String[]{String.valueOf(passingName)}, null, null, null, null);
 
         if (cursor != null)
             cursor.moveToFirst();
 
-        Iroid iroid = new Iroid(cursor.getString(1),
-                cursor.getString(3), cursor.getString(4));
+        Iroid iroid = new Iroid(_id, cursor.getString(1),
+                cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5));
 
         return iroid;
-    }*/
-
+    }
 
 
 
@@ -126,6 +126,34 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
 
         return iroidList;
+    }
+
+
+
+
+    public int updateIroid(String id, String finalName, String finalPlace, String finalAge, String finalPhone, String finalQualification) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_NAME, finalName);
+        values.put(KEY_PLACE, finalPlace);
+        values.put(KEY_AGE, finalAge);
+        values.put(KEY_PHONE, finalPhone);
+        values.put(KEY_QUALIFICATION, finalQualification);
+
+
+        // updating row
+        //String.valueOf() is usedto cast the result to string in order to store it in string array.
+        return db.update(TABLE_IROID, values, KEY_ID + " = ?",
+                new String[] { id });
+    }
+
+
+    public void deleteIroid(Iroid iroid) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_IROID, KEY_ID + " = ?",
+                new String[] { String.valueOf(iroid.getId()) });
+        db.close();
     }
 
 

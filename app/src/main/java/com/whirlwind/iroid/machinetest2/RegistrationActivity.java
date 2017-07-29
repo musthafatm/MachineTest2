@@ -24,7 +24,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
 
     DatabaseHandler db = new DatabaseHandler(this);
 
-    int id = 0;
+    int id;
 
 
     @Override
@@ -39,6 +39,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         metRegisterQualification = (EditText) findViewById(R.id.etRegisterQualification);
 
         mbtnSave = (Button) findViewById(R.id.btnSave);
+        mbtnSave.setOnClickListener(this);
 
     }
 
@@ -60,7 +61,9 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
 
         } else {
             Toast.makeText(this, "Successfully Registered", Toast.LENGTH_SHORT).show();
+/*
             id = id + 1;
+*/
             String stringName = String.valueOf(metRegisterName);
             String stringPlace = String.valueOf(metRegisterPlace);
             String stringAge = String.valueOf(metRegisterAge);
@@ -68,10 +71,11 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
             String stringQualification= String.valueOf(metRegisterQualification);
 
 
-            db.addIroid(new Iroid(id,stringName, stringPlace, stringAge, stringPhone, stringQualification));
+            db.addIroid(new Iroid(id, stringName, stringPlace, stringAge, stringPhone, stringQualification));
 
             Intent intent = new Intent(this, ListviewActivity.class);
             startActivity(intent);
+            finish();
         }
     }
 
