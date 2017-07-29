@@ -46,7 +46,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         String CREATE_IROID_TABLE = "CREATE TABLE " + TABLE_IROID + "("
                 + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT," + KEY_PLACE + " TEXT," + KEY_AGE + " TEXT,"
-                + KEY_PHONE + " TEXT" + KEY_QUALIFICATION + " TEXT," + ")";
+                + KEY_PHONE + " TEXT," + KEY_QUALIFICATION + " TEXT" + ")";
 
         db.execSQL(CREATE_IROID_TABLE);
 
